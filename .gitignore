@@ -3,6 +3,8 @@ kerastuner
 *.sqlite3
 *.h5
 s1
+tbs1
+tbf1
 tensorboard
-/data_test.py
-/data_train.py
+data_test.py
+data_train.py
