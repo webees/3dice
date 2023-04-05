@@ -17,8 +17,9 @@ LR_MIN = 1e-6
 PATIENCE = 10
 VERBOSE = 1
 
-EPOCHS=1000
+EPOCHS = 1000
 BATCH_SIZE = 1
+SHUFFLE = False
 
 model = tf.keras.models.load_model('hypermodel.h5')
 
@@ -28,6 +29,7 @@ history = model.fit(
     validation_data=(x_test, y_test),
     epochs=EPOCHS,
     batch_size=BATCH_SIZE,
+    shuffle=SHUFFLE,
     callbacks=[
         tf.keras.callbacks.ModelCheckpoint(filepath=POINT_FILE, monitor=MONITOR, mode=MONITOR_MAX, save_best_only=True, save_weights_only=False),  # Only save the weights that correspond to the maximum validation accuracy.
         tf.keras.callbacks.EarlyStopping(monitor=MONITOR, mode=MONITOR_MAX, patience=PATIENCE, verbose=VERBOSE),  # If val_loss doesn't improve for a number of epochs set with 'patience' var training will stop to avoid overfitting.

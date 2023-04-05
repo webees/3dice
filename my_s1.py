@@ -21,6 +21,7 @@ VERBOSE = 1
 
 EPOCHS=1000
 BATCH_SIZE = 64
+SHUFFLE = False
 
 hypermodel = MyHyperModel(
     learning_rate=[1e-2, 1e-3, 1e-4],
@@ -37,7 +38,7 @@ hypermodel = MyHyperModel(
 
 tuner = MyTuner(
     hypermodel,
-    objective='val_accuracy',
+    objective=MONITOR,
     max_epochs=EPOCHS,
     factor=3,
     hyperband_iterations=3,
@@ -55,6 +56,7 @@ tuner.search(
     y_train,
     validation_data=(x_test, y_test),
     batch_size=BATCH_SIZE,
+    shuffle=SHUFFLE,
     callbacks=[
         tf.keras.callbacks.ModelCheckpoint(filepath=POINT_FILE, monitor=MONITOR, mode=MONITOR_MAX, save_best_only=True, save_weights_only=False, verbose=VERBOSE),  # Only save the weights that correspond to the maximum validation accuracy.
         tf.keras.callbacks.EarlyStopping(monitor=MONITOR, mode=MONITOR_MAX, patience=PATIENCE, verbose=VERBOSE),  # If val_loss doesn't improve for a number of epochs set with 'patience' var training will stop to avoid overfitting.
