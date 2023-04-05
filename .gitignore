@@ -1,0 +1,8 @@
+__pycache__
+kerastuner
+*.sqlite3
+*.h5
+s1
+tensorboard
+/data_test.py
+/data_train.py
