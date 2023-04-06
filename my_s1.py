@@ -24,12 +24,12 @@ SHUFFLE = False
 
 hypermodel = MyHyperModel(
     learning_rate=[1e-2, 1e-3, 1e-4],
-    input=(12, 'swish'),
-    output=(56, 'softmax'),
+    input=tf.keras.layers.LSTM(units=56, input_shape=(None, 12), return_sequences=True, stateful=True,),
+    output=tf.keras.layers.Dense(units=56, activation='softmax'),
     depth=(3, 6, 1),
-    lstm=(56, 60, 1, ['tanh', 'sigmoid', 'swish']),
-    dense=(56, 60, 1, ['swish', 'softplus', 'tanh']),
-    compile=('categorical_crossentropy', ['accuracy'])
+    lstm=(56, 64, 1, ['tanh', 'sigmoid', 'swish']),
+    dense=(56, 64, 1, ['swish', 'softplus', 'tanh']),
+    compile=('adam', 'categorical_crossentropy', ['accuracy'])
 )
 
 tuner = MyTuner(
