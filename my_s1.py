@@ -24,15 +24,12 @@ SHUFFLE = False
 
 hypermodel = MyHyperModel(
     learning_rate=[1e-2, 1e-3, 1e-4],
-    input_units=12,
-    input_activ='swish',
-    output_units=56,
-    output_activ='softmax',
-    dense_nums=(3, 6, 1),
-    dense_units=(56, 60, 1),
-    dense_activ=['swish', 'softplus', 'tanh'],
-    compile_loss='categorical_crossentropy',
-    compile_metrics=['accuracy']
+    input=(12, 'swish'),
+    output=(56, 'softmax'),
+    depth=(3, 6, 1),
+    lstm=(56, 60, 1, ['tanh', 'sigmoid', 'swish']),
+    dense=(56, 60, 1, ['swish', 'softplus', 'tanh']),
+    compile=('categorical_crossentropy', ['accuracy'])
 )
 
 tuner = MyTuner(
