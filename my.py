@@ -31,7 +31,7 @@ class MyHyperModel(kt.HyperModel):
             lstm_activ = hp.Choice(f"lstm_{i}", self.lstm[3])
             dense_units = hp.Int(f"units_{i}", min_value=self.dense[0], max_value=self.dense[1], step=self.dense[2])
             dense_activ = hp.Choice(f"activ_{i}", self.dense[3])
-            model.add(tf.keras.layers.LSTM(units=lstm_units, activation=lstm_activ, return_sequences = True))
+            model.add(tf.keras.layers.LSTM(units=lstm_units, activation=lstm_activ, return_sequences = True, stateful=True))
             model.add(tf.keras.layers.Dense(units=dense_units, activation=dense_activ))
         model.add(self.output)
         if self.compile[0] == 'adam':
