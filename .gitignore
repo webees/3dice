@@ -8,3 +8,5 @@ tbf1
 tensorboard
 data_test.py
 data_train.py
+mydata.py
+mybot.py
