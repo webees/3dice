@@ -1,8 +1,7 @@
 import os
 import tensorflow as tf
 from my import MyTuner, MyHyperModel
-from data_train import x_train, y_train
-from data_test import x_test, y_test
+from mydata import train, test, BATCH_SIZE, WINDOW_SIZE, FEATURES_NUM
 
 SEED = 42
 tf.random.set_seed(SEED)
@@ -19,15 +18,15 @@ PATIENCE = 10
 VERBOSE = 1
 
 EPOCHS = 1000
-BATCH_SIZE = 64
+SEARCH_BATCH = BATCH_SIZE
 SHUFFLE = False
 
 hypermodel = MyHyperModel(
     learning_rate=[1e-2, 1e-3, 1e-4],
-    input=tf.keras.layers.LSTM(units=56, input_shape=(None, 12), return_sequences=True, stateful=True,),
+    input=tf.keras.layers.LSTM(units=56, return_sequences=True, stateful=True, batch_input_shape=(BATCH_SIZE, WINDOW_SIZE, FEATURES_NUM)),
     output=tf.keras.layers.Dense(units=56, activation='softmax'),
     depth=(3, 6, 1),
-    lstm=(56, 64, 1, ['tanh', 'sigmoid', 'swish']),
+    lstm=(56, 64, 1),
     dense=(56, 64, 1, ['swish', 'softplus', 'tanh']),
     compile=('adam', 'categorical_crossentropy', ['accuracy'])
 )
@@ -43,15 +42,14 @@ tuner = MyTuner(
     directory='kerastuner',
     project_name=PROJECT_NAME
 )
-
-tuner.reload()
 tuner.search_space_summary()
+# tuner.reload()
+
 
 tuner.search(
-    x_train,
-    y_train,
-    validation_data=(x_test, y_test),
-    batch_size=BATCH_SIZE,
+    train,
+    validation_data=test,
+    batch_size=SEARCH_BATCH,
     shuffle=SHUFFLE,
     callbacks=[
         tf.keras.callbacks.ModelCheckpoint(filepath=DIR_POINT_FILE, monitor=MONITOR, mode=MONITOR_MAX, save_best_only=True, save_weights_only=False, verbose=VERBOSE),  # Only save the weights that correspond to the maximum validation accuracy.
