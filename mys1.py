@@ -16,6 +16,7 @@ LR_FACTOR = 0.3
 LR_MIN = 1e-6
 PATIENCE = 10
 VERBOSE = 1
+STATEFUL = False
 
 EPOCHS = 1000
 SEARCH_BATCH = BATCH_SIZE
@@ -23,12 +24,13 @@ SHUFFLE = False
 
 hypermodel = MyHyperModel(
     learning_rate=[1e-2, 1e-3, 1e-4],
-    input=tf.keras.layers.LSTM(units=56, return_sequences=True, stateful=True, batch_input_shape=(BATCH_SIZE, WINDOW_SIZE, FEATURES_NUM)),
-    output=tf.keras.layers.Dense(units=56, activation='softmax'),
+    input=tf.keras.layers.LSTM(units=56, return_sequences=True, stateful=STATEFUL, batch_input_shape=(BATCH_SIZE, None, FEATURES_NUM), name="input"),
+    output=tf.keras.layers.Dense(units=56, activation='softmax', name="output"),
     depth=(3, 6, 1),
     lstm=(56, 64, 1),
     dense=(56, 64, 1, ['swish', 'softplus', 'tanh']),
-    compile=('adam', 'categorical_crossentropy', ['accuracy'])
+    compile=('adam', 'categorical_crossentropy', ['accuracy']),
+    stateful=True,
 )
 
 tuner = MyTuner(
@@ -49,7 +51,7 @@ tuner.search_space_summary()
 tuner.search(
     train,
     validation_data=test,
-    batch_size=SEARCH_BATCH,
+    # batch_size=SEARCH_BATCH,
     shuffle=SHUFFLE,
     callbacks=[
         tf.keras.callbacks.ModelCheckpoint(filepath=DIR_POINT_FILE, monitor=MONITOR, mode=MONITOR_MAX, save_best_only=True, save_weights_only=False, verbose=VERBOSE),  # Only save the weights that correspond to the maximum validation accuracy.
