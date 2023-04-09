@@ -11,7 +11,7 @@ class MyTuner(kt.Hyperband):
 
 
 class MyHyperModel(kt.HyperModel):
-    def __init__(self, learning_rate, input, output, depth, lstm,  dense, compile):
+    def __init__(self, learning_rate, input, output, depth, lstm, dense, compile, stateful):
         self.learning_rate = learning_rate
         self.input = input
         self.output = output
@@ -19,23 +19,54 @@ class MyHyperModel(kt.HyperModel):
         self.lstm = lstm
         self.dense = dense
         self.compile = compile
+        self.stateful = stateful
 
     def build(self, hp):
         '''['relu', 'sigmoid', 'softmax', 'softplus', 'softsign', 'tanh', 'selu', 'elu', 'exponential', 'leaky_relu', 'swish', 'exponential', 'hard_sigmoid', 'linear']'''
-        hp_depth = hp.Int("depth", min_value=self.depth[0], max_value=self.depth[1], step=self.depth[2])
-        hp_lr = hp.Choice("learning_rate", values=self.learning_rate)
         model = tf.keras.Sequential()
+        # INPUT ##########################################################################
         model.add(self.input)
+        # DEPTH ##########################################################################
+        hp_depth = hp.Int("depth", min_value=self.depth[0], max_value=self.depth[1], step=self.depth[2])
         for i in range(hp_depth):
-            lstm_units = hp.Int(f"lstm_{i}", min_value=self.lstm[0], max_value=self.lstm[1], step=self.lstm[2])
-            dense_units = hp.Int(f"units_{i}", min_value=self.dense[0], max_value=self.dense[1], step=self.dense[2])
-            dense_activ = hp.Choice(f"activ_{i}", self.dense[3])
-            return_sequences = False if i == hp_depth-1 else True
-            model.add(tf.keras.layers.LSTM(name=f"lstm_{i}", units=lstm_units, return_sequences = return_sequences, stateful=True))
-            model.add(tf.keras.layers.Dense(name=f"dense_{i}", units=dense_units, activation=dense_activ))
+            # LSTM #######################################################################
+            model.add(tf.keras.layers.LSTM(
+                units=hp.Int(f"lstm_{i}", min_value=self.lstm[0], max_value=self.lstm[1], step=self.lstm[2]),
+                return_sequences=True,
+                stateful=self.stateful,
+                name=f"lstm_{i}"
+            ))
+            # DENSE ######################################################################
+            if i < hp_depth-1:
+                model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(
+                    units=hp.Int(f"units_{i}", min_value=self.dense[0], max_value=self.dense[1], step=self.dense[2], default=self.dense[0]),
+                    activation=hp.Choice(f"activ_{i}", self.dense[3]),
+                    name=f"dense_{i}"
+                )))
+
+        # LSTM LAST #######################################################################
+        model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(
+            units=56,
+            activation=hp.Choice("activ_last1", self.dense[3]),
+            name=f"dense_{i}"
+        )))
+        model.add(tf.keras.layers.LSTM(
+            units=56,
+            return_sequences=False,
+            stateful=self.stateful,
+            name="lstm_last"
+        ))
+        # DENSE LAST ######################################################################
+        model.add(tf.keras.layers.Dense(
+            units=56,
+            activation=hp.Choice("activ_last2", self.dense[3]),
+            name="dense_last"
+        ))
+        # OUTPUT ##########################################################################
         model.add(self.output)
+        # COMPILE #########################################################################
         if self.compile[0] == 'adam':
-            optimizer = tf.keras.optimizers.Adam(hp_lr)
+            optimizer = tf.keras.optimizers.Adam(hp.Choice("learning_rate", values=self.learning_rate))
         model.compile(
             optimizer=optimizer,
             loss=self.compile[1],
