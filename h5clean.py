@@ -1,10 +1,10 @@
 import os
 import time
 
-PROJECT_NAME = 's1'
-DIR = os.path.join(os.getcwd(), PROJECT_NAME)
+DIR_PROJECT = 'm1s'
+DIR = os.path.join(os.getcwd(), DIR_PROJECT)
 
-MAX_FILES = 1
+MAX_FILES = 20
 MIN_VACC = 0.6
 
 while True:

@@ -29,41 +29,32 @@ class MyHyperModel(kt.HyperModel):
         # DEPTH ##########################################################################
         hp_depth = hp.Int("depth", min_value=self.depth[0], max_value=self.depth[1], step=self.depth[2])
         for i in range(hp_depth):
-            # LSTM #######################################################################
-            model.add(tf.keras.layers.LSTM(
-                units=hp.Int(f"lstm_{i}", min_value=self.lstm[0], max_value=self.lstm[1], step=self.lstm[2]),
-                return_sequences=True,
-                stateful=self.stateful,
-                name=f"lstm_{i}"
-            ))
-            # DENSE ######################################################################
             if i < hp_depth-1:
+                model.add(tf.keras.layers.LSTM(
+                    units=hp.Int(f"lstm_{i}", min_value=self.lstm[0], max_value=self.lstm[1], step=self.lstm[2]),
+                    return_sequences=True,
+                    stateful=self.stateful,
+                    name=f"lstm_{i}"
+                ))
                 model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(
                     units=hp.Int(f"units_{i}", min_value=self.dense[0], max_value=self.dense[1], step=self.dense[2], default=self.dense[0]),
                     activation=hp.Choice(f"activ_{i}", self.dense[3]),
                     name=f"dense_{i}"
                 )))
-
-        # LSTM LAST #######################################################################
-        model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(
-            units=56,
-            activation=hp.Choice("activ_last1", self.dense[3]),
-            name=f"dense_{i}"
-        )))
-        model.add(tf.keras.layers.LSTM(
-            units=56,
-            return_sequences=False,
-            stateful=self.stateful,
-            name="lstm_last"
-        ))
-        # DENSE LAST ######################################################################
-        model.add(tf.keras.layers.Dense(
-            units=56,
-            activation=hp.Choice("activ_last2", self.dense[3]),
-            name="dense_last"
-        ))
+            else:
+                model.add(tf.keras.layers.LSTM(
+                    units=self.output[0],
+                    return_sequences=False,
+                    stateful=self.stateful,
+                    name=f"lstm_{i}"
+                ))
+                model.add(tf.keras.layers.Dense(
+                    units=self.output[0],
+                    activation=hp.Choice(f"activ_{i}", self.dense[3]),
+                    name=f"dense_{i}"
+                ))
         # OUTPUT ##########################################################################
-        model.add(self.output)
+        model.add(tf.keras.layers.Dense(units=self.output[0], activation=self.output[1], name="output"))
         # COMPILE #########################################################################
         if self.compile[0] == 'adam':
             optimizer = tf.keras.optimizers.Adam(hp.Choice("learning_rate", values=self.learning_rate))
