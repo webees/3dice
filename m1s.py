@@ -1,5 +1,7 @@
 import os
 import tensorflow as tf
+from keras.layers import LSTM
+from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard
 from m1 import MyTuner, MyHyperModel
 from db import x_train, x_test, y_train, y_test, BATCH_SIZE, WINDOW_SIZE, FEATURES_NUM
 
@@ -24,7 +26,7 @@ SHUFFLE = False
 
 hypermodel = MyHyperModel(
     learning_rate=[1e-2, 1e-3, 1e-4],
-    input=tf.keras.layers.LSTM(units=FEATURES_NUM, return_sequences=True, stateful=STATEFUL, batch_input_shape=(BATCH_SIZE, None, FEATURES_NUM), name="input"),
+    input=LSTM(units=FEATURES_NUM, return_sequences=True, stateful=STATEFUL, batch_input_shape=(BATCH_SIZE, None, FEATURES_NUM), name="input"),
     output=(56, "softmax"),
     depth=(3, 6, 1),
     lstm=(11, 99, 11),
@@ -47,7 +49,6 @@ tuner = MyTuner(
 tuner.search_space_summary()
 # tuner.reload()
 
-
 tuner.search(
     x_train,
     y_train,
@@ -55,10 +56,10 @@ tuner.search(
     batch_size=SEARCH_BATCH,
     shuffle=SHUFFLE,
     callbacks=[
-        tf.keras.callbacks.ModelCheckpoint(filepath=DIR_POINT_FILE, monitor=MONITOR, mode=MONITOR_MAX, save_best_only=True, save_weights_only=False, verbose=VERBOSE),  # Only save the weights that correspond to the maximum validation accuracy.
-        tf.keras.callbacks.EarlyStopping(monitor=MONITOR, mode=MONITOR_MAX, patience=PATIENCE, verbose=VERBOSE),  # If val_loss doesn't improve for a number of epochs set with 'patience' var training will stop to avoid overfitting.
-        tf.keras.callbacks.ReduceLROnPlateau(monitor=MONITOR, mode=MONITOR_MAX, factor=LR_FACTOR, min_lr=LR_MIN, patience=PATIENCE//2, verbose=VERBOSE),  # Learning rate is reduced by 'lr_factor' if val_loss stagnates for a number of epochs set with 'patience/2' var.
-        tf.keras.callbacks.TensorBoard(DIR_TENSORBOARD,  histogram_freq=1)
+        ModelCheckpoint(filepath=DIR_POINT_FILE, monitor=MONITOR, mode=MONITOR_MAX, save_best_only=True, save_weights_only=False, verbose=VERBOSE),  # Only save the weights that correspond to the maximum validation accuracy.
+        EarlyStopping(monitor=MONITOR, mode=MONITOR_MAX, patience=PATIENCE, verbose=VERBOSE),  # If val_loss doesn't improve for a number of epochs set with 'patience' var training will stop to avoid overfitting.
+        ReduceLROnPlateau(monitor=MONITOR, mode=MONITOR_MAX, factor=LR_FACTOR, min_lr=LR_MIN, patience=PATIENCE//2, verbose=VERBOSE),  # Learning rate is reduced by 'lr_factor' if val_loss stagnates for a number of epochs set with 'patience/2' var.
+        # TensorBoard(DIR_TENSORBOARD,  histogram_freq=1)
     ]
 )
 
