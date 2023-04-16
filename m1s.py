@@ -26,7 +26,7 @@ SHUFFLE = False
 
 hypermodel = MyHyperModel(
     learning_rate=[1e-2, 1e-3, 1e-4],
-    input=LSTM(units=FEATURES_NUM, return_sequences=True, stateful=STATEFUL, batch_input_shape=(BATCH_SIZE, None, FEATURES_NUM), name="input"),
+    input=LSTM(units=FEATURES_NUM, return_sequences=True, stateful=STATEFUL, batch_input_shape=(BATCH_SIZE, WINDOW_SIZE, FEATURES_NUM), name="input"),
     output=(56, "softmax"),
     depth=(3, 6, 1),
     lstm=(11, 99, 11),
@@ -54,6 +54,7 @@ tuner.search(
     y_train,
     validation_data=(x_test, y_test),
     batch_size=SEARCH_BATCH,
+    # steps_per_epoch=256,
     shuffle=SHUFFLE,
     callbacks=[
         ModelCheckpoint(filepath=DIR_POINT_FILE, monitor=MONITOR, mode=MONITOR_MAX, save_best_only=True, save_weights_only=False, verbose=VERBOSE),  # Only save the weights that correspond to the maximum validation accuracy.

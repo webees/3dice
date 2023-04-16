@@ -1,7 +1,8 @@
 import keras_tuner as kt
 from keras.models import Sequential
 from keras.optimizers import Adam
-from keras.layers import LSTM, Dense,TimeDistributed
+from keras.layers import LSTM, Dense, TimeDistributed, Dropout
+
 
 class MyHP(kt.HyperParameters):
     pass
@@ -32,26 +33,30 @@ class MyHyperModel(kt.HyperModel):
         for i in range(hp_depth):
             if i < hp_depth-1:
                 model.add(LSTM(
-                    units=hp.Int(f"lstm_{i}", min_value=self.lstm[0], max_value=self.lstm[1], step=self.lstm[2]),
+                    units=hp.Int(f"{i}_lstm", min_value=self.lstm[0], max_value=self.lstm[1], step=self.lstm[2]),
+                    dropout=hp.Float(f"{i}_lstm__drop",min_value=0,max_value=0.5,step=0.1),
                     return_sequences=True,
                     stateful=self.stateful,
-                    name=f"lstm_{i}"
+                    name=f"{i}_lstm"
                 ))
+                model.add(Dropout(hp.Float(f"{i}_drop",min_value=0,max_value=0.5,step=0.1)))
                 model.add(TimeDistributed(Dense(
-                    units=hp.Int(f"units_{i}", min_value=self.dense[0], max_value=self.dense[1], step=self.dense[2], default=self.dense[0]),
-                    activation=hp.Choice(f"activ_{i}", self.dense[3]),
-                    name=f"dense_{i}"
+                    units=hp.Int(f"{i}_units", min_value=self.dense[0], max_value=self.dense[1], step=self.dense[2], default=self.dense[0]),
+                    activation=hp.Choice(f"{i}_activ", self.dense[3]),
+                    name=f"{i}_dense"
                 )))
             else:
                 model.add(LSTM(
                     units=self.output[0],
+                    dropout=hp.Float(f"{i}_lstm_drop",min_value=0,max_value=0.5,step=0.1),
                     return_sequences=False,
                     stateful=self.stateful,
-                    name=f"lstm_{i}"
+                    name=f"{i}_lstm"
                 ))
+                model.add(Dropout(hp.Float(f"{i}_drop",min_value=0,max_value=0.5,step=0.1)))
                 model.add(Dense(
                     units=self.output[0],
-                    activation=hp.Choice(f"activ_{i}", self.dense[3]),
+                    activation=hp.Choice(f"{i}_activ", self.dense[3]),
                     name=f"dense_{i}"
                 ))
         # OUTPUT ##########################################################################
