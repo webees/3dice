@@ -1,6 +1,5 @@
 from db2 import DB_2_DF
 from db3 import DB_3_DF
-import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from sklearn.preprocessing import StandardScaler

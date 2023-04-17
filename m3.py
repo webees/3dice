@@ -9,13 +9,12 @@ from m3db import x_train, y_train, x_test, y_test
 SEED = 42
 tf.random.set_seed(SEED)
 ###############################################################################################################################
-DIR_PROJECT = 'm3'
-DIR = os.path.dirname(os.path.abspath(__file__))
-DIR_POINT_FILE = os.path.join(DIR, DIR_PROJECT + '.h5')
-DIR_TENSORBOARD = os.path.join(DIR, DIR_PROJECT)
+__PROJECT = os.path.splitext(os.path.basename(__file__))[0]
+__DIR = os.path.dirname(os.path.abspath(__file__))
+__POINT_H5 = os.path.join(__DIR, __PROJECT + '.h5')
 ###############################################################################################################################
-if os.path.exists(DIR_POINT_FILE):
-    model = load_model(DIR_POINT_FILE)
+if os.path.exists(__POINT_H5):
+    model = load_model(__POINT_H5)
 else:
     model = Sequential()
     # 1
@@ -41,7 +40,7 @@ history = model.fit(
     shuffle=False,
     verbose=1,
     callbacks=[
-        ModelCheckpoint(filepath=DIR_POINT_FILE, monitor='val_accuracy', mode='max', save_best_only=True, save_weights_only=False, verbose=1),
+        ModelCheckpoint(filepath=__POINT_H5, monitor='val_accuracy', mode='max', save_best_only=True, save_weights_only=False, verbose=1),
         EarlyStopping(monitor='val_accuracy', mode='max', patience=10, verbose=1),
         ReduceLROnPlateau(monitor='val_accuracy', mode='max', factor=0.1, min_lr=1e-6, patience=5, verbose=1),
         # TensorBoard(DIR_TENSORBOARD,  histogram_freq=1)

@@ -1,9 +1,11 @@
 from db4 import x_train, x_test, y_train, y_test
+from db2 import COLUMNS
 import numpy as np
+import pandas as pd
 from keras.preprocessing.sequence import TimeseriesGenerator
 
 BATCH_SIZE = 128
-WINDOW_SIZE = 1440
+WINDOW_SIZE = 1439
 FEATURES_NUM = x_train.shape[1]
 LABLES_NUM = y_train.shape[1]
 
@@ -28,3 +30,6 @@ print(f"BATCH {i}: x shape = {x.shape}, y shape = {y.shape}")
 for i in range(len(test)):
     x, y = test[i]
 print(f"TEST {i}: x shape = {x.shape}, y shape = {y.shape}")
+############################################################################################################################
+print(pd.DataFrame(x[0], columns=COLUMNS))
+print(pd.DataFrame(y[0]))
