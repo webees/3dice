@@ -15,3 +15,4 @@ arr = np.array(sql, dtype=np.int64)
 DB_1_DF = pd.DataFrame(arr, columns=['id'])
 
 print(DB_1_DF)
+print("\n\n")

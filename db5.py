@@ -25,11 +25,13 @@ x = None
 y = None
 for i in range(len(train)):
     x, y = train[i]
-print(f"BATCH {i}: x shape = {x.shape}, y shape = {y.shape}")
+print(f"BATCH {i}: x_train shape = {x.shape}, y_train shape = {y.shape}")
 ############################################################################################################################
 for i in range(len(test)):
     x, y = test[i]
-print(f"TEST {i}: x shape = {x.shape}, y shape = {y.shape}")
+print(f"BATCH {i}: x_test shape = {x.shape}, y_test shape = {y.shape}")
 ############################################################################################################################
+print("\n\n")
 print(pd.DataFrame(x[0], columns=COLUMNS))
-print(pd.DataFrame(y, columns=COLUMNS))
+print(pd.DataFrame([y[0]], columns=COLUMNS))
+print("\n\n")

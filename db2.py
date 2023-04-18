@@ -60,3 +60,4 @@ COLUMNS = ['year', 'month', 'day', 'hour', 'minute', 'day_of_year', 'week_of_yea
 DB_2_DF = pd.DataFrame(arr, columns=COLUMNS)
 
 print(DB_2_DF)
+print("\n\n")

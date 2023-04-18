@@ -2,13 +2,17 @@ from db2 import DB_2_DF
 import numpy as np
 import pandas as pd
 
-arr = []
-for _, row in DB_2_DF.iterrows():
-    t = [0] * 56
-    t[row[15]] = 1
-    arr.append(t)
-arr = np.array(arr, dtype=int)
+# arr = []
+# for _, row in DB_2_DF.iterrows():
+#     t = [0] * 56
+#     t[row[15]] = 1
+#     arr.append(t)
+# arr = np.array(arr, dtype=int)
 
-DB_3_DF = pd.DataFrame(arr)
+# DB_3_DF = pd.DataFrame(arr)
+
+DB_3_DF = DB_2_DF
+DB_3_DF[['num1', 'num2', 'num3', 'sum', 'is_odd', 'is_big', 'nums', 'index']] = 0
 
 print(DB_3_DF)
+print("\n\n")
