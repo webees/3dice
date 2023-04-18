@@ -41,4 +41,4 @@ for i in range(len(test)):
 print(f"TEST {i}: x shape = {x.shape}, y shape = {y.shape}")
 ############################################################################################################################
 print(pd.DataFrame(x[0], columns=COLUMNS))
-print(pd.DataFrame(y[0]))
+print(pd.DataFrame(y, columns=COLUMNS))
