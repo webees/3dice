@@ -12,7 +12,6 @@ import pandas as pd
 # DB_3_DF = pd.DataFrame(arr)
 
 DB_3_DF = DB_2_DF
-DB_3_DF[['num1', 'num2', 'num3', 'sum', 'is_odd', 'is_big', 'nums', 'index']] = 0
 
 print(DB_3_DF)
 print("\n\n")
