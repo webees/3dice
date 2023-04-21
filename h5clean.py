@@ -1,8 +1,8 @@
 import os
 import time
 
-DIR_PROJECT = 'm1s'
-DIR = os.path.join(os.getcwd(), DIR_PROJECT)
+__PROJECT = 'm5'
+__DIR = os.path.join(os.getcwd(), __PROJECT)
 
 MAX_FILES = 20
 MIN_VACC = 0.6
@@ -10,7 +10,7 @@ MIN_VACC = 0.6
 while True:
     try:
         time.sleep(1)
-        file_list = os.listdir(DIR)
+        file_list = os.listdir(__DIR)
         h5_count = len([f for f in file_list if f.endswith('.h5')])
         print("H5_COUNT:", h5_count)
         if h5_count <= MAX_FILES:
@@ -25,7 +25,7 @@ while True:
                     min_vacc = vacc
                     min_file = file
         if min_file != "":
-            os.remove(os.path.join(DIR, min_file))
+            os.remove(os.path.join(__DIR, min_file))
             print(f"❌ {min_file}")
     except PermissionError:
         time.sleep(1)
