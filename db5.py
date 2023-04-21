@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from keras.preprocessing.sequence import TimeseriesGenerator
 
-BATCH_SIZE = 128
+BATCH_SIZE = 1440
 WINDOW_SIZE = 1439
 FEATURES_NUM = x_train.shape[1]
 LABLES_NUM = y_train.shape[1]
@@ -25,13 +25,13 @@ x = None
 y = None
 for i in range(len(train)):
     x, y = train[i]
-print(f"BATCH {i}: x_train shape = {x.shape}, y_train shape = {y.shape}")
+print(f"BATCH {i}: x_train = {x.shape}, y_train = {y.shape}")
 ############################################################################################################################
 for i in range(len(test)):
     x, y = test[i]
-print(f"BATCH {i}: x_test shape = {x.shape}, y_test shape = {y.shape}")
+print(f"BATCH {i}: x_test = {x.shape}, y_test = {y.shape}")
 ############################################################################################################################
-print("\n\n")
-print(pd.DataFrame(x[0], columns=COLUMNS))
-print(pd.DataFrame([y[0]], columns=COLUMNS))
-print("\n\n")
+print("\n#########################")
+print(pd.DataFrame(train[0][0][0], columns=COLUMNS))
+print(pd.DataFrame([train[0][1][0]], columns=COLUMNS))
+print("#########################\n")

@@ -13,5 +13,6 @@ import pandas as pd
 
 DB_3_DF = DB_2_DF
 
+print("\n#########################")
 print(DB_3_DF)
-print("\n\n")
+print("#########################\n")
