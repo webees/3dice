@@ -20,16 +20,8 @@ test = [batch for batch in test if batch[0].shape[0] == BATCH_SIZE]
 x_test = np.concatenate([batch[0] for batch in test])
 y_test = np.concatenate([batch[1] for batch in test])
 ############################################################################################################################
-i = None
-x = None
-y = None
-for i in range(len(train)):
-    x, y = train[i]
-print(f"BATCH {i}: x_train = {x.shape}, y_train = {y.shape}")
-############################################################################################################################
-for i in range(len(test)):
-    x, y = test[i]
-print(f"BATCH {i}: x_test = {x.shape}, y_test = {y.shape}")
+print(f"BATCH {len(train)}: x_train = {train[0][0].shape}, y_train = {train[0][1].shape}")
+print(f"BATCH {len(test)}: x_test = {test[0][0].shape}, y_test = {test[0][1].shape}")
 ############################################################################################################################
 print("\n#########################")
 print(pd.DataFrame(train[0][0][0], columns=COLUMNS))
