@@ -32,7 +32,7 @@ for _, row in DB_1_DF.iterrows():
         sum, is_odd, is_big,
         nums, index
     ])
-arr = np.array(arr, dtype=np.int64)
+arr = np.array(arr, dtype=np.int16)
 
 COLUMNS = ['minute_of_day', 'year', 'month', 'day', 'hour', 'minute', 'day_of_year', 'week_of_year', 'day_of_week', 'num1', 'num2', 'num3', 'sum', 'is_odd', 'is_big', 'nums', 'index']
 

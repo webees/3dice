@@ -11,7 +11,7 @@ sql = cur.execute('SELECT * FROM game631').fetchall()
 cur.close()
 conn.close()
 
-arr = np.array(sql, dtype=np.int64)
+arr = np.array(sql, dtype=np.int32)
 DB_1_DF = pd.DataFrame(arr, columns=['id'])
 
 print("\n#########################")
